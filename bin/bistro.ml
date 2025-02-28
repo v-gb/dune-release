@@ -9,12 +9,15 @@ open Bos_setup.R.Infix
 (* Only carry on when the first operation returns 0 *)
 let ( >! ) x f = match x with Ok 0 -> f () | _ -> x
 
+let _x = 1
+
 let bistro () (`Dry_run dry_run) (`Package_names pkg_names)
     (`Package_version version) (`Dist_tag tag) (`Keep_v keep_v) (`Token token)
     (`Include_submodules include_submodules) (`Draft draft)
     (`Keep_build_dir keep_dir) (`Skip_lint skip_lint) (`Skip_build skip_build)
     (`Skip_tests skip_tests) (`Local_repo local_repo) (`Remote_repo remote_repo)
     (`Opam_repo opam_repo) (`No_auto_open no_auto_open) (`Dev_repo dev_repo) =
+  let _ = _x in
   Cli.handle_error
     ( Dune_release.Config.token ~token ~dry_run () >>= fun token ->
       let token = Dune_release.Config.Cli.make token in
@@ -28,6 +31,8 @@ let bistro () (`Dry_run dry_run) (`Package_names pkg_names)
       Opam.pkg ~dry_run ~pkgs () >! fun () ->
       Opam.submit ~token ~dry_run ~pkgs ~pkg_names ~no_auto_open ~yes:false
         ~draft () ?local_repo ?remote_repo ?opam_repo )
+
+let _x = 2
 
 (* Command line interface *)
 
